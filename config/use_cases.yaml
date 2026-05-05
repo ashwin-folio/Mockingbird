@@ -1,0 +1,133 @@
+# Mockingbird Use Cases
+# =====================
+# Predefined design templates and dimensions
+
+use_cases:
+  banner:
+    name: "In-App Banner"
+    description: "Promotional banners for mobile and web applications"
+    typically_needs_image: true
+    default_variant: "mobile_large"
+    variants:
+      mobile_small:
+        width: 320
+        height: 50
+        description: "Small mobile banner"
+      mobile_large:
+        width: 320
+        height: 100
+        description: "Large mobile banner"
+      tablet:
+        width: 728
+        height: 90
+        description: "Tablet leaderboard banner"
+      web_leaderboard:
+        width: 728
+        height: 90
+        description: "Web leaderboard format"
+
+  social_post:
+    name: "Social Media Post"
+    description: "Content for social media platforms"
+    typically_needs_image: true
+    default_variant: "instagram_square"
+    variants:
+      instagram_square:
+        width: 1080
+        height: 1080
+        description: "Instagram feed post"
+      instagram_story:
+        width: 1080
+        height: 1920
+        description: "Instagram/Facebook story"
+      linkedin:
+        width: 1200
+        height: 628
+        description: "LinkedIn post image"
+      twitter:
+        width: 1200
+        height: 675
+        description: "Twitter/X post image"
+
+  ui_screen:
+    name: "UI Screen"
+    description: "Application interface mockups"
+    typically_needs_image: false
+    uses_placeholders: true
+    default_variant: "mobile"
+    variants:
+      mobile:
+        width: 375
+        height: 812
+        description: "Mobile screen (iPhone)"
+      mobile_android:
+        width: 360
+        height: 800
+        description: "Mobile screen (Android)"
+      tablet:
+        width: 768
+        height: 1024
+        description: "Tablet screen (iPad)"
+      desktop:
+        width: 1440
+        height: 900
+        description: "Desktop screen"
+
+  hero:
+    name: "Hero Image"
+    description: "Large hero banners for websites and landing pages"
+    typically_needs_image: true
+    default_variant: "standard"
+    variants:
+      standard:
+        width: 1920
+        height: 600
+        description: "Standard hero banner"
+      wide:
+        width: 1920
+        height: 800
+        description: "Wide hero banner"
+      compact:
+        width: 1440
+        height: 400
+        description: "Compact hero banner"
+
+  illustration:
+    name: "Illustration"
+    description: "Custom illustrations and graphics"
+    typically_needs_image: true
+    default_variant: "square"
+    variants:
+      square:
+        width: 800
+        height: 800
+        description: "Square illustration"
+      landscape:
+        width: 1200
+        height: 800
+        description: "Landscape illustration"
+      portrait:
+        width: 800
+        height: 1200
+        description: "Portrait illustration"
+
+# Keywords for detecting image needs
+image_detection:
+  needs_image:
+    - "background"
+    - "image"
+    - "photo"
+    - "illustration"
+    - "gradient"
+    - "pattern"
+    - "visual"
+    - "graphic"
+    - "picture"
+  no_image:
+    - "text only"
+    - "no image"
+    - "simple"
+    - "plain"
+    - "wireframe"
+    - "skeleton"
+    - "outline"

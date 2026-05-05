@@ -1,0 +1,399 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% Colors
+\definecolor{primary}{HTML}{3B82F6}
+\definecolor{secondary}{HTML}{1F2937}
+\definecolor{accent}{HTML}{10B981}
+\definecolor{codebg}{HTML}{F3F4F6}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary,
+    citecolor=primary
+}
+
+% Code listing style
+\lstset{
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{secondary},
+    numbers=none
+}
+
+% Header/Footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{secondary}{Mockingbird Documentation}}
+\fancyhead[R]{\textcolor{secondary}{\thepage}}
+\renewcommand{\headrulewidth}{0.5pt}
+
+% Title formatting
+\titleformat{\section}{\Large\bfseries\color{secondary}}{}{0em}{}
+\titleformat{\subsection}{\large\bfseries\color{secondary}}{}{0em}{}
+
+\begin{document}
+
+% Title Page
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+
+    {\Huge\bfseries\textcolor{primary}{Mockingbird}\par}
+    \vspace{0.5cm}
+    {\Large Design Automation Pipeline\par}
+
+    \vspace{2cm}
+
+    {\large\textcolor{secondary}{Technical Documentation \& Pricing Guide}\par}
+
+    \vspace{3cm}
+
+    \begin{tabular}{ll}
+        \textbf{Version:} & 1.0 \\
+        \textbf{Date:} & May 2026 \\
+        \textbf{Author:} & KNOT Work Design Team \\
+    \end{tabular}
+
+    \vfill
+
+    {\small Powered by Claude Code + Figma MCP + OpenRouter\par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% =============================================================================
+\section{Introduction}
+% =============================================================================
+
+Mockingbird is a design automation pipeline that enables product designers to generate design assets directly in Figma using natural language prompts. The system combines Claude Code (AI orchestration), OpenRouter (image generation), and the Official Figma MCP (canvas manipulation).
+
+\subsection{Key Features}
+\begin{itemize}
+    \item \textbf{Natural Language Interface}: Describe what you want, get designs
+    \item \textbf{AI Image Generation}: Generate backgrounds, illustrations, and visuals
+    \item \textbf{Direct Figma Integration}: Compositions appear directly in your Figma file
+    \item \textbf{Brand Consistency}: All designs follow your brand guidelines
+    \item \textbf{Multiple Use Cases}: Banners, social posts, UI screens, heroes, illustrations
+\end{itemize}
+
+\subsection{Target Users}
+Product designers with minimal technical knowledge who want to:
+\begin{itemize}
+    \item Rapidly prototype design concepts
+    \item Generate multiple design iterations quickly
+    \item Maintain brand consistency across assets
+    \item Reduce time spent on repetitive design tasks
+\end{itemize}
+
+% =============================================================================
+\section{System Architecture}
+% =============================================================================
+
+\subsection{Overview}
+
+\begin{verbatim}
++-------------------------------------------------------------+
+|                     CLAUDE CODE (Pro/Max)                    |
+|              (Orchestration via CLAUDE.md)                   |
+|                                                              |
+|  +-------------+  +--------------+  +-------------+          |
+|  |  CLAUDE.md  |  | Brand Guide- |  | Config YAML |          |
+|  |  (Workflow) |  |    lines     |  |  (Settings) |          |
+|  +-------------+  +--------------+  +-------------+          |
++-------------------------------------------------------------+
+          |                                    |
+          v                                    v
++---------------------+              +---------------------+
+|   OpenRouter API    |              |  Official Figma MCP |
+|  (Image Generation) |              |      (OAuth)        |
+|                     |              |                     |
+| * Gemini 3.1 Flash  |              |  * use_figma        |
+|   Image Preview     |              |  * get_screenshot   |
+| * ~$0.10-0.15/image |              |  * get_metadata     |
++---------------------+              +---------------------+
+\end{verbatim}
+
+\subsection{Components}
+
+\subsubsection{Claude Code}
+The orchestration layer running on the user's machine. Requires a Pro (\$20/month) or Max (\$100/month) subscription.
+
+\subsubsection{OpenRouter API}
+Third-party API aggregator providing access to various AI models including Gemini 3.1 Flash Image Preview for image generation.
+
+\subsubsection{Official Figma MCP}
+Figma's Model Context Protocol server enabling direct canvas manipulation via OAuth authentication. No additional plugins or servers required.
+
+% =============================================================================
+\section{Installation \& Setup}
+% =============================================================================
+
+\subsection{Prerequisites}
+\begin{enumerate}
+    \item Claude Code Pro or Max subscription
+    \item OpenRouter account with API credits
+    \item Figma account (Free or paid)
+\end{enumerate}
+
+\subsection{Setup Steps}
+\begin{enumerate}
+    \item Download Mockingbird package
+    \item Copy \texttt{.env.example} to \texttt{.env}
+    \item Add OpenRouter API key to \texttt{.env}
+    \item Run \texttt{claude} in Mockingbird directory
+    \item Complete Figma OAuth authentication
+\end{enumerate}
+
+\subsection{Configuration Files}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lp{8cm}@{}}
+\toprule
+\textbf{File} & \textbf{Purpose} \\
+\midrule
+\texttt{.env} & API keys (keep private) \\
+\texttt{config/settings.yaml} & Default iterations, model selection, output paths \\
+\texttt{config/use\_cases.yaml} & Use case definitions and dimensions \\
+\texttt{brand/brand\_guidelines.md} & Brand colors, typography, style \\
+\bottomrule
+\end{tabular}
+\caption{Configuration files and their purposes}
+\end{table}
+
+% =============================================================================
+\section{Workflow}
+% =============================================================================
+
+\subsection{Standard Workflow}
+
+\begin{enumerate}
+    \item \textbf{User Request}: Designer provides design direction and use case
+    \item \textbf{Analysis}: Claude parses request and determines requirements
+    \item \textbf{Brand Loading}: Brand guidelines are loaded for consistency
+    \item \textbf{Image Generation}: If needed, images are generated via OpenRouter
+    \item \textbf{Iteration Review}: User reviews options in Figma
+    \item \textbf{Selection}: User selects preferred iteration
+    \item \textbf{Composition}: Final design is created in Figma
+\end{enumerate}
+
+\subsection{Use Cases}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Use Case} & \textbf{Typical Variants} & \textbf{Needs Image} & \textbf{Default} \\
+\midrule
+Banner & mobile\_small, mobile\_large, tablet & Yes & mobile\_large \\
+Social Post & instagram\_square, instagram\_story, linkedin & Yes & instagram\_square \\
+UI Screen & mobile, tablet, desktop & No (placeholders) & mobile \\
+Hero & standard, wide, compact & Yes & standard \\
+Illustration & square, landscape, portrait & Yes & square \\
+\bottomrule
+\end{tabular}
+\caption{Available use cases and their defaults}
+\end{table}
+
+% =============================================================================
+\section{Pricing Estimates}
+% =============================================================================
+
+\subsection{Fixed Costs}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}llp{6cm}@{}}
+\toprule
+\textbf{Component} & \textbf{Cost/Month} & \textbf{Notes} \\
+\midrule
+Claude Code Pro & \$20 & Per user, standard usage limits \\
+Claude Code Max & \$100 & Per user, higher limits for heavy use \\
+Figma MCP & \$0 & Included with Figma account \\
+\bottomrule
+\end{tabular}
+\caption{Fixed monthly costs}
+\end{table}
+
+\subsection{Variable Costs (Image Generation)}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Model} & \textbf{Cost/Image} & \textbf{Quality} \\
+\midrule
+Gemini 3.1 Flash Image Preview & \$0.10--0.15 & High \\
+Gemini 2.5 Flash Image & \$0.08--0.12 & Good \\
+Alternative models & Varies & Varies \\
+\bottomrule
+\end{tabular}
+\caption{Image generation costs by model}
+\end{table}
+
+\subsection{Monthly Cost Scenarios}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Usage Level} & \textbf{Images/Month} & \textbf{Image Cost} & \textbf{Total (with Pro)} \\
+\midrule
+Light & 50 & \$5--8 & \$25--28 \\
+Moderate & 200 & \$20--30 & \$40--50 \\
+Heavy & 500 & \$50--75 & \$70--95 \\
+Very Heavy & 1000 & \$100--150 & \$120--170 \\
+\bottomrule
+\end{tabular}
+\caption{Estimated monthly costs by usage level}
+\end{table}
+
+\subsection{Cost per Design Type}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lrrl@{}}
+\toprule
+\textbf{Design Type} & \textbf{Iterations} & \textbf{Est. Cost} & \textbf{Notes} \\
+\midrule
+Simple Banner & 2 & \$0.20--0.30 & Background only \\
+Social Post & 2 & \$0.20--0.30 & Background only \\
+Complex Banner & 4 & \$0.40--0.60 & Background + elements \\
+UI Screen & 0--2 & \$0--0.30 & Usually no images \\
+Hero Image & 3 & \$0.30--0.45 & High-quality background \\
+Full Campaign (5 pieces) & 10--15 & \$1.00--2.25 & Multiple assets \\
+\bottomrule
+\end{tabular}
+\caption{Estimated cost per design type}
+\end{table}
+
+\subsection{ROI Considerations}
+
+\textbf{Time Savings:}
+\begin{itemize}
+    \item Manual banner creation: 30--60 minutes
+    \item Mockingbird banner creation: 5--10 minutes
+    \item Time saved per banner: 20--50 minutes
+\end{itemize}
+
+\textbf{Break-even Analysis:}
+At a designer rate of \$50/hour, Mockingbird pays for itself after creating approximately 3--5 designs per month (based on time savings).
+
+% =============================================================================
+\section{Best Practices}
+% =============================================================================
+
+\subsection{Prompt Writing}
+\begin{itemize}
+    \item Be specific about style: ``vibrant gradient'' not ``colorful''
+    \item Include purpose: ``summer sale'' not just ``sale''
+    \item Reference brand elements: ``use our accent green''
+    \item Specify dimensions when needed: ``instagram\_story variant''
+\end{itemize}
+
+\subsection{Iteration Management}
+\begin{itemize}
+    \item Start with 2 iterations (default)
+    \item Increase to 3--4 for important assets
+    \item Use ``redo'' with feedback for refinement
+    \item Clean up unused iterations periodically
+\end{itemize}
+
+\subsection{Brand Consistency}
+\begin{itemize}
+    \item Keep \texttt{brand\_guidelines.md} updated
+    \item Use exact hex codes for colors
+    \item Specify fonts that are available in Figma
+    \item Document tone of voice for copy suggestions
+\end{itemize}
+
+% =============================================================================
+\section{Troubleshooting}
+% =============================================================================
+
+\subsection{Common Issues}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lp{7cm}@{}}
+\toprule
+\textbf{Issue} & \textbf{Solution} \\
+\midrule
+API key not found & Check \texttt{.env} file exists and has valid key \\
+Figma auth failed & Re-authenticate, ensure browser is logged into Figma \\
+Font not available & Use ``Inter'' or update brand guidelines \\
+Images not generating & Check OpenRouter credits, try fewer iterations \\
+Slow performance & Reduce iterations, use smaller Figma file \\
+\bottomrule
+\end{tabular}
+\caption{Common issues and solutions}
+\end{table}
+
+% =============================================================================
+\section{Appendix}
+% =============================================================================
+
+\subsection{Supported Dimensions}
+
+\subsubsection{Banners}
+\begin{itemize}
+    \item Mobile Small: 320 $\times$ 50 px
+    \item Mobile Large: 320 $\times$ 100 px
+    \item Tablet: 728 $\times$ 90 px
+    \item Web Leaderboard: 728 $\times$ 90 px
+\end{itemize}
+
+\subsubsection{Social Media}
+\begin{itemize}
+    \item Instagram Square: 1080 $\times$ 1080 px
+    \item Instagram Story: 1080 $\times$ 1920 px
+    \item LinkedIn: 1200 $\times$ 628 px
+    \item Twitter/X: 1200 $\times$ 675 px
+\end{itemize}
+
+\subsubsection{UI Screens}
+\begin{itemize}
+    \item Mobile (iPhone): 375 $\times$ 812 px
+    \item Mobile (Android): 360 $\times$ 800 px
+    \item Tablet: 768 $\times$ 1024 px
+    \item Desktop: 1440 $\times$ 900 px
+\end{itemize}
+
+\subsubsection{Hero Images}
+\begin{itemize}
+    \item Standard: 1920 $\times$ 600 px
+    \item Wide: 1920 $\times$ 800 px
+    \item Compact: 1440 $\times$ 400 px
+\end{itemize}
+
+\subsection{Version History}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Version} & \textbf{Date} & \textbf{Changes} \\
+\midrule
+1.0 & May 2026 & Initial release \\
+\bottomrule
+\end{tabular}
+\caption{Version history}
+\end{table}
+
+\end{document}

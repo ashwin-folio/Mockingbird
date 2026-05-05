@@ -1,0 +1,39 @@
+# Mockingbird Settings
+# ====================
+# Core configuration for the design automation pipeline
+
+# Image Generation Settings
+image_generation:
+  default_iterations: 2
+  max_iterations: 4
+  model: "google/gemini-3.1-flash-image-preview"
+  api_base_url: "https://openrouter.ai/api/v1"
+  timeout_seconds: 120
+
+# Output Settings
+output:
+  directory: "outputs"
+  image_format: "png"
+  naming_pattern: "{use_case}_{timestamp}_{iteration}"
+  keep_after_upload: true
+
+# Figma Settings
+figma:
+  iterations_page_name: "Image Iterations"
+  output_page_name: "Mockingbird Output"
+  section_naming: "{use_case}_{MonDD_HHMM}"
+  iteration_frame_size:
+    width: 400
+    height: 400
+  frame_spacing: 40
+
+# Brand Settings
+brand:
+  guidelines_path: "brand/brand_guidelines.md"
+
+# Placeholder Settings (for UI screens)
+placeholders:
+  fill_color: "#E5E7EB"
+  stroke_color: "#9CA3AF"
+  stroke_width: 1
+  label_font_size: 12
