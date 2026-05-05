@@ -30,3 +30,4 @@ docs/latex/*.toc
 docs/latex/*.synctex.gz
 docs/latex/*.fdb_latexmk
 docs/latex/*.fls
+docs/latex/*.tex

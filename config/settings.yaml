@@ -6,9 +6,24 @@
 image_generation:
   default_iterations: 2
   max_iterations: 4
-  model: "google/gemini-3.1-flash-image-preview"
+  model: "google/gemini-3.1-flash-image-preview"  # NANO BANANA 2
   api_base_url: "https://openrouter.ai/api/v1"
   timeout_seconds: 120
+
+# Security Settings
+security:
+  max_prompt_length: 2000
+  daily_token_budget: 100000
+  warn_at_budget_percent: 80
+  blocked_patterns:
+    - "ignore previous"
+    - "disregard instructions"
+    - "system prompt"
+    - "jailbreak"
+  require_cost_confirmation: true
+  cost_per_1k_tokens:
+    input: 0.0005
+    output: 0.003
 
 # Output Settings
 output:
@@ -37,3 +52,23 @@ placeholders:
   stroke_color: "#9CA3AF"
   stroke_width: 1
   label_font_size: 12
+
+# Font Fallback Chain (U4 fix)
+fonts:
+  fallback_chain:
+    - "Inter"
+    - "Arial"
+    - "Helvetica"
+    - "Roboto"
+    - "SF Pro"
+  notify_on_fallback: true
+
+# UX Settings
+ux:
+  show_progress_feedback: true
+  require_local_preview: false  # Set true to always preview before Figma upload
+  show_cost_estimation: true
+  enable_undo: true
+  rate_limit_warnings:
+    starter_warn_at: 3
+    pro_warn_at_percent: 80
