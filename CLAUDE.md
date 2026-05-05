@@ -94,11 +94,28 @@ Headers:
 
 Body:
 {
-  "model": "google/gemini-3.1-flash-image-preview",
+  "model": "google/gemini-2.5-flash-image",
+  "max_tokens": {calculated_tokens},
   "messages": [{"role": "user", "content": [{"type": "text", "text": "Generate an image: {enhanced_prompt}"}]}],
   "response_format": {"type": "image"}
 }
 ```
+
+**Dynamic Token Allocation:**
+Always include `max_tokens` - OpenRouter defaults to model maximum which exceeds free tier budgets.
+
+| Request Complexity | max_tokens | When to Use |
+|-------------------|------------|-------------|
+| Simple | 4096 | Single element, basic gradient, simple icon |
+| Moderate | 8192 | Banner with text overlay, social post with brand elements |
+| Complex | 16384 | Multi-element composition, detailed scene, specific style matching |
+| Extensive | 24000 | Photo-realistic scenes, complex illustrations with many elements |
+
+**Assess complexity by:** prompt length, number of distinct elements requested, level of style/brand detail, reference images included.
+
+**Available Models:**
+- `google/gemini-2.5-flash-image` (recommended, free tier compatible)
+- `google/gemini-3.1-flash-image-preview` (better quality, requires paid credits)
 
 **Prompt Enhancement Template:**
 ```
@@ -113,6 +130,44 @@ Variation {N} of {total}: Create a unique interpretation.
 ```
 
 Save returned base64 image to `outputs/iteration_{timestamp}_{N}.png`
+
+---
+
+## Figma MCP Rate Limits
+
+| Plan | Limit | Reset |
+|------|-------|-------|
+| Starter | 6/month | Monthly |
+| Pro (Full Seat) | 200/day | Daily |
+| Organization | 200/day | Daily |
+| Enterprise | 600/day | Daily |
+
+### Tools That COUNT Against Limit (Read)
+`get_design_context`, `get_metadata`, `get_screenshot`, `get_variable_defs`, `get_figjam`, `get_libraries`, `search_design_system`, `whoami`, `get_code_connect_map`, `generate_diagram`
+
+### Tools EXEMPT From Limit (Write)
+`use_figma`, `upload_assets`, `create_new_file`
+
+### Strategy by Plan
+
+**Ask user's plan at session start if unknown.**
+
+#### Starter Plan (6/month) - Conservation Mode
+1. Skip `whoami` after first auth check
+2. Skip `get_metadata` - derive structure from URL or ask user
+3. Go directly to `use_figma` for writes
+4. Batch maximum operations per call (up to 10)
+5. Skip intermediate `get_screenshot` - ask user to verify in Figma
+6. Use `get_screenshot` only for final deliverable verification
+7. When at 1-2 calls remaining, ask user to verify everything manually
+
+#### Pro/Org/Enterprise (200-600/day) - Quality Mode
+1. Use `whoami` at session start for auth confidence
+2. Use `get_metadata` when working with unfamiliar files - prevents blind write errors
+3. Use `get_screenshot` after major milestones to catch issues early
+4. Batch operations for efficiency, but don't sacrifice verification
+5. Use `search_design_system` and `get_libraries` freely to match existing patterns
+6. Prioritize getting it right over minimizing calls - rework costs more than reads
 
 ---
 
