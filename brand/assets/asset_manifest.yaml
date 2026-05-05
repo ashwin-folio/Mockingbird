@@ -1,0 +1,27 @@
+# Brand Asset Manifest
+# ====================
+# Tracks uploaded assets and their Figma node IDs to avoid re-uploading.
+# Auto-updated by Mockingbird when assets are uploaded to Figma.
+
+# Last sync timestamp
+last_sync: null
+
+# Figma file where assets are stored
+figma_file_id: null
+figma_assets_page_id: null
+
+# Uploaded assets registry
+# Format: local_path -> { figma_node_id, uploaded_at, hash }
+assets:
+  logos: {}
+  icons: {}
+  images: {}
+  elements: {}
+
+# Example entry (auto-generated):
+# logos:
+#   "logo_primary.svg":
+#     figma_node_id: "123:456"
+#     uploaded_at: "2026-05-05T14:30:00Z"
+#     hash: "abc123..."
+#     dimensions: { width: 200, height: 50 }

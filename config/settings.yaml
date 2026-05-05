@@ -45,6 +45,22 @@ figma:
 # Brand Settings
 brand:
   guidelines_path: "brand/brand_guidelines.md"
+  assets_path: "brand/assets"
+  asset_manifest: "brand/assets/asset_manifest.yaml"
+  figma_assets_page: "Brand Assets"
+  supported_formats:
+    - ".svg"
+    - ".png"
+    - ".jpg"
+    - ".jpeg"
+    - ".gif"
+  asset_categories:
+    - logos
+    - icons
+    - images
+    - elements
+  default_padding: 20
+  auto_sync_on_start: false
 
 # Placeholder Settings (for UI screens)
 placeholders:

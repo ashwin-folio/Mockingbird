@@ -110,6 +110,40 @@ Our brand voice is:
 - Don't add effects (shadows, glows)
 - Don't place on busy backgrounds without contrast
 
+### Logo Assets
+Place logo files in `brand/assets/logos/`:
+| File | Usage |
+|------|-------|
+| `logo_primary.svg` | Main logo, dark backgrounds |
+| `logo_white.svg` | White version for dark backgrounds |
+| `logo_black.svg` | Black version for light backgrounds |
+| `logo_icon.svg` | Icon-only version (favicon, small spaces) |
+
+---
+
+## Brand Assets
+
+All visual assets are stored in `brand/assets/` for use in Mockingbird compositions.
+
+### Asset Folders
+| Folder | Contents |
+|--------|----------|
+| `logos/` | Brand logos in various formats/colors |
+| `icons/` | UI icons, social media icons |
+| `images/` | Stock photos, illustrations, textures |
+| `elements/` | Decorative shapes, patterns, overlays |
+
+### Naming Convention
+- Use lowercase with underscores: `icon_arrow_right.svg`
+- Include variant info: `logo_white.svg`, `logo_dark.svg`
+- Include size if specific: `hero_1920x600.jpg`
+
+### Usage in Compositions
+Reference assets by name in Mockingbird:
+- "Add logo_primary to top-left"
+- "Use icon_arrow next to the button"
+- "Set hero_photo as background"
+
 ---
 
 ## Platform Specifications

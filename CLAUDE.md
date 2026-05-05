@@ -184,6 +184,143 @@ Save returned base64 image to `outputs/iteration_{timestamp}_{N}.png`
 
 ---
 
+## Brand Assets
+
+### Folder Structure
+```
+brand/assets/
+├── logos/          # Brand logos (SVG, PNG)
+├── icons/          # UI icons, social icons (SVG, PNG)
+├── images/         # Photos, illustrations (PNG, JPG, GIF)
+├── elements/       # Decorative elements, patterns, shapes (SVG, PNG)
+└── asset_manifest.yaml  # Tracks uploaded assets (auto-managed)
+```
+
+### Supported Formats
+| Format | Best For | Notes |
+|--------|----------|-------|
+| SVG | Logos, icons, elements | Scalable, preferred for vectors |
+| PNG | Images with transparency | Use for raster graphics needing alpha |
+| JPG | Photos | Smaller file size, no transparency |
+| GIF | Animated elements | Figma supports animated GIFs |
+
+### Asset Upload Workflow
+
+**Step 1: Discover Local Assets**
+```
+Scanning brand/assets/...
+Found:
+  - logos/: 2 files (logo_primary.svg, logo_white.png)
+  - icons/: 5 files (arrow.svg, check.svg, ...)
+  - images/: 1 file (hero_photo.jpg)
+  - elements/: 3 files (gradient_overlay.png, ...)
+```
+
+**Step 2: Check Manifest for Already Uploaded**
+Read `brand/assets/asset_manifest.yaml`. Compare file hashes to detect:
+- New assets (not in manifest)
+- Modified assets (hash changed)
+- Unchanged assets (skip upload, use cached node ID)
+
+**Step 3: Upload New/Modified Assets to Figma**
+```
+📤 Uploading brand assets to Figma...
+   Creating "Brand Assets" page (if needed)...
+   Creating section "Logos"...
+   ⬆️ Uploading logo_primary.svg... done (node: 123:456)
+   ⬆️ Uploading logo_white.png... done (node: 123:457)
+   [Figma: 0/6 reads used - upload_assets is FREE]
+```
+
+**Step 4: Update Manifest**
+```yaml
+assets:
+  logos:
+    "logo_primary.svg":
+      figma_node_id: "123:456"
+      uploaded_at: "2026-05-05T14:30:00Z"
+      hash: "a1b2c3..."
+      dimensions: { width: 200, height: 50 }
+```
+
+### Using Assets in Compositions
+
+**User can reference assets by name:**
+- "Add the primary logo to top-left"
+- "Use the arrow icon next to the CTA"
+- "Place hero_photo as background"
+
+**Workflow:**
+1. Parse asset reference from user request
+2. Look up in manifest → get `figma_node_id`
+3. Clone asset into composition:
+```javascript
+const assetNode = await figma.getNodeByIdAsync("{figma_node_id}");
+const clone = assetNode.clone();
+targetFrame.appendChild(clone);
+clone.x = {position_x};
+clone.y = {position_y};
+// Optionally resize
+clone.resize({width}, {height});
+return { clonedId: clone.id };
+```
+
+### Asset Placement Presets
+
+| Placement | Position | Common Use |
+|-----------|----------|------------|
+| `top-left` | x: padding, y: padding | Logo |
+| `top-right` | x: frame.width - asset.width - padding, y: padding | Secondary logo |
+| `top-center` | x: centered, y: padding | Header logo |
+| `bottom-left` | x: padding, y: frame.height - asset.height - padding | Watermark |
+| `bottom-right` | x/y: bottom-right with padding | Badge, stamp |
+| `center` | x/y: centered | Hero element |
+| `background` | x: 0, y: 0, resize to frame | Background image |
+
+### Sync Command
+
+User says: **"Sync brand assets"** or **"Upload brand assets"**
+
+Response:
+```
+🔄 Syncing brand assets...
+
+Scanning local files...
+  logos/: 2 files
+  icons/: 5 files
+  images/: 1 file
+  elements/: 3 files
+
+Comparing with manifest...
+  New: 3 files
+  Modified: 1 file
+  Unchanged: 7 files (skipping)
+
+Uploading to Figma "Brand Assets" page...
+  ⬆️ icons/new_icon.svg... done
+  ⬆️ icons/updated_icon.svg... done (replaced)
+  ⬆️ images/new_photo.jpg... done
+  ⬆️ elements/pattern.svg... done
+
+✅ Sync complete!
+   Uploaded: 4 files
+   Skipped: 7 files (unchanged)
+   
+Asset manifest updated.
+```
+
+### Quick Reference Commands
+
+| Command | Action |
+|---------|--------|
+| "Sync brand assets" | Upload new/modified assets to Figma |
+| "List brand assets" | Show available assets by category |
+| "Add [asset] to [position]" | Place asset in current composition |
+| "Show asset manifest" | Display cached Figma node IDs |
+| "Clear asset cache" | Reset manifest (forces re-upload) |
+
+---
+
 ## Figma MCP Rate Limits
 
 | Plan | Limit | Reset |
