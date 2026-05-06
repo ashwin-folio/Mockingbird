@@ -132,6 +132,49 @@ You can always do this later.
 
 ## Step 7: Connect to Figma
 
+You have two options for connecting to Figma:
+
+### Option A: Plugin Bridge (Recommended - No Rate Limits)
+
+The Plugin Bridge uses Figma's local Plugin API, which has **no rate limits**. Best for:
+- Starter plan users (only 6 API calls/month on official MCP)
+- High-volume design generation
+- Anyone who wants unlimited operations
+
+**Setup:**
+
+1. **Add MCP server to Claude Code config**
+   - Open `.claude/settings.json` (create it if needed)
+   - Add:
+   ```json
+   {
+     "mcpServers": {
+       "figma-bridge": {
+         "command": "npx",
+         "args": ["-y", "@gethopp/figma-mcp-bridge"]
+       }
+     }
+   }
+   ```
+
+2. **Install the Figma plugin**
+   - Download the plugin from: https://github.com/gethopp/figma-mcp-bridge/releases
+   - Extract the ZIP file
+   - In Figma Desktop: `Plugins → Development → Import plugin from manifest`
+   - Select the `manifest.json` from the extracted `plugin/` folder
+
+3. **Start using it**
+   - Open your Mockingbird Figma file
+   - Run the plugin: `Plugins → Development → Figma MCP Bridge`
+   - Keep the plugin window open during your session
+   - Start designing with Claude Code!
+
+**Note:** The plugin must stay open in Figma while you work. If it disconnects, just re-run it.
+
+### Option B: Official Figma MCP (OAuth)
+
+The traditional approach using Figma's REST API. Has rate limits based on your plan.
+
 On your first run, Claude will help you connect to Figma:
 
 1. Claude will say "Let's authenticate with Figma"
@@ -141,6 +184,13 @@ On your first run, Claude will help you connect to Figma:
 5. You'll be redirected to a page with a callback URL
 6. Copy the entire URL from your browser
 7. Paste it back into Claude Code
+
+**Rate Limits (Official MCP only):**
+| Plan | Limit |
+|------|-------|
+| Starter | 6/month |
+| Pro | 200/day |
+| Enterprise | 600/day |
 
 **That's it!** Figma is now connected.
 
@@ -168,10 +218,16 @@ Claude will:
 - Make sure the key is on the line starting with `OPENROUTER_API_KEY=`
 - Make sure there are no spaces around the `=` sign
 
-### "Figma authentication failed"
+### "Figma authentication failed" (Official MCP)
 - Make sure you're logged into Figma in your browser
 - Try the authentication again
 - Make sure you copied the complete callback URL
+
+### "Plugin Bridge not connecting"
+- Make sure Figma Desktop is open (not browser Figma)
+- Ensure the plugin is running (should show "Connected" status)
+- Restart Claude Code after adding the MCP config
+- Check that npx can run: try `npx -y @gethopp/figma-mcp-bridge` in terminal
 
 ### "Font not available"
 - Mockingbird defaults to "Inter" font

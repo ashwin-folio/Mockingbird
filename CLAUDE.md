@@ -4,10 +4,73 @@
 Mockingbird generates design assets (banners, social posts, UI screens) in Figma using AI. You orchestrate the workflow, generate images via OpenRouter, and create compositions using the Official Figma MCP.
 
 ## Architecture
+
+**Option 1: Official Figma MCP (Rate Limited)**
 ```
 Claude Code (You) ──┬──> OpenRouter API ──> AI-generated images
                     └──> Figma MCP (OAuth) ──> Figma file compositions
 ```
+Rate limits apply: 6/month (Starter), 200/day (Pro), 600/day (Enterprise)
+
+**Option 2: Plugin Bridge (Unlimited) - Recommended**
+```
+Claude Code (You) ──┬──> OpenRouter API ──> AI-generated images
+                    └──> figma-mcp-bridge ──> Figma Plugin ──> Figma file (local)
+```
+No rate limits. Uses Figma Plugin API which runs locally in Figma Desktop.
+
+---
+
+## Figma Connection Options
+
+### Option A: Official Figma MCP (Default)
+- Uses Figma REST API via OAuth
+- Subject to rate limits based on plan tier
+- Works headlessly (no Figma UI required)
+- Supports cross-file operations
+
+### Option B: Plugin Bridge (Unlimited)
+- Uses Figma Plugin API (local, no rate limits)
+- Requires Figma Desktop with plugin running
+- Only works on currently open file
+- **Best for high-volume design generation**
+
+**To use Plugin Bridge:**
+1. Add to Claude Code MCP config (`.claude/settings.json`):
+   ```json
+   {
+     "mcpServers": {
+       "figma-bridge": {
+         "command": "npx",
+         "args": ["-y", "@gethopp/figma-mcp-bridge"]
+       }
+     }
+   }
+   ```
+2. Install plugin in Figma: Download from [figma-mcp-bridge releases](https://github.com/gethopp/figma-mcp-bridge/releases), then `Plugins → Development → Import plugin from manifest`
+3. Open your Mockingbird Figma file and run the plugin
+4. Start designing - no rate limits!
+
+**Plugin Bridge Tools:**
+| Tool | Description |
+|------|-------------|
+| `list_files` | List connected Figma files |
+| `get_document` | Get current page document tree |
+| `get_selection` | Get selected nodes |
+| `get_node` | Get specific node by ID |
+| `get_styles` | Get all local styles |
+| `get_metadata` | Get file/page info |
+| `get_screenshot` | Export nodes as image |
+| `save_screenshots` | Save screenshots to filesystem |
+
+**When to use which:**
+| Scenario | Recommended |
+|----------|-------------|
+| Starter plan (6/month limit) | Plugin Bridge |
+| High-volume batch generation | Plugin Bridge |
+| Cross-file operations | Official MCP |
+| Headless/automated workflows | Official MCP |
+| Single-file design sessions | Plugin Bridge |
 
 ## Before Starting Any Workflow
 
@@ -21,12 +84,15 @@ Claude Code (You) ──┬──> OpenRouter API ──> AI-generated images
 **Initialize session tracking:**
 ```
 Session State:
-- figma_plan: {ask user: Starter/Pro/Org/Enterprise}
+- figma_mode: {ask user: "plugin" (unlimited) or "mcp" (rate limited)}
+- figma_plan: {if mcp mode: Starter/Pro/Org/Enterprise}
 - figma_read_calls: 0
-- figma_read_limit: {6 for Starter, 200 for Pro/Org, 600 for Enterprise}
+- figma_read_limit: {unlimited for plugin, 6/200/600 for mcp}
 - tokens_used: 0
 - created_node_ids: []
 ```
+
+**Ask at session start:** "Are you using the Plugin Bridge (unlimited) or Official MCP? If Plugin Bridge, make sure the Figma plugin is running."
 
 ---
 
@@ -323,12 +389,17 @@ Asset manifest updated.
 
 ## Figma MCP Rate Limits
 
+> **Bypass rate limits entirely:** Use the Plugin Bridge (Option B above) for unlimited operations.
+
+**Official MCP Limits (Option A only):**
+
 | Plan | Limit | Reset |
 |------|-------|-------|
 | Starter | 6/month | Monthly |
 | Pro (Full Seat) | 200/day | Daily |
 | Organization | 200/day | Daily |
 | Enterprise | 600/day | Daily |
+| **Plugin Bridge** | **Unlimited** | N/A |
 
 ### Tools That COUNT Against Limit (Read)
 `get_design_context`, `get_metadata`, `get_screenshot`, `get_variable_defs`, `get_figjam`, `get_libraries`, `search_design_system`, `whoami`, `get_code_connect_map`, `generate_diagram`
